@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="chat-box" id="chat">
+    {% for msg in messages %}
+        <div class="user">{{ msg.text }}</div>
+        <div class="bot">{{ msg.response }}</div>
+    {% endfor %}
+</div>
+
+<input id="msg" placeholder="Напиши сообщение...">
+<button onclick="send()">Отправить</button>
+
+<script>
+async function send() {
+    let msg = document.getElementById("msg").value;
+
+    let res = await fetch("/ask", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: msg})
+    });
+
+    let data = await res.json();
+
+    document.getElementById("chat").innerHTML += 
+        "<div class='user'>" + msg + "</div>" +
+        "<div class='bot'>" + data.response + "</div>";
+}
+</script>
+
+</body>
+</html>
